@@ -32,7 +32,7 @@ this can be further fixed by validtating input json and, in this case, either ig
 in the above array, the first node is a paragraph `p`, forcing following text `Auckland` to be in a new line but the expected output says differently. i believe this is a minor mistake.
 
 - final result screen shot
-![[demo.png]]
+![demo](./demo.png)
 
 ## run
 ### from cmd
