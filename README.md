@@ -1,7 +1,13 @@
 next.js based home project
 
-## note
-- use react context to figure out clause level. And together with a global map, figure out clause level-index/number. 
+## 
+use react context to figure out clause level. And together with a global map, figure out clause level-index/number. 
+
+demo:
+![demo](./demo.png)
+
+
+## additional note about input
 - input `input.json` has a `p` element above `ul` which warns 
 ```
 app-index.js:32 Warning: validateDOMNesting(...): <ul> cannot appear as a descendant of <p>.
@@ -30,9 +36,6 @@ this can be further fixed by validtating input json and, in this case, either ig
 },
 ```
 in the above array, the first node is a paragraph `p`, forcing following text `Auckland` to be in a new line but the expected output says differently. i believe this is a minor mistake.
-
-- final result screen shot
-![demo](./demo.png)
 
 ## run
 ### from cmd
