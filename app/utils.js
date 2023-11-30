@@ -49,4 +49,30 @@ function getClauseContractTableIndex(text, clauseTitle, level, clauses) {
     return clauseIdx;
 }
 
-export {findTitle, getClauseIndex, shouldSetClauseTitle, getClauseContractTableIndex};
+function searchMentions(jsonArray) {
+    // recursively preprocess and eventually return map of mentions from input json array 
+    if (!jsonArray)
+        return new Map();
+    let mentions = new Map();
+    jsonArray.map((jsonNode, index) => {
+        mentions = new Map([...mentions, ...searchMentions_(jsonNode)]);
+    });
+    return mentions;
+}
+
+function searchMentions_(jsonNode) {
+    // recursively preprocess and eventually return map of mentions from input json node
+    let mentions = new Map();
+    let mention;
+    if (jsonNode.type && jsonNode.type === 'mention') {
+        mention = {
+            id: jsonNode.id,
+            color: jsonNode.color,
+            value: jsonNode.value,
+        };
+        mentions.set(mention.id, mention);
+    }
+    return new Map([...mentions, ...searchMentions(jsonNode.children)]);
+}
+
+export {findTitle, getClauseIndex, shouldSetClauseTitle, getClauseContractTableIndex, searchMentions};

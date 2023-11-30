@@ -1,7 +1,10 @@
-import { ClauseLevel, ClauseTitle } from './Context.js';
-import { useContext } from 'react';
+'use client';
+
+import { ClauseLevel, ClauseTitle, CtxMention, CtxMentionSetter} from './context.js';
+import { useContext, useState, useEffect } from 'react';
 import React from 'react';
-import {findTitle, getClauseIndex, shouldSetClauseTitle, getClauseContractTableIndex} from './utils.js';
+import {findTitle, getClauseContractTableIndex} from './utils.js';
+import {mentionHanlder} from './event.js'
 
 
 const RenderLeft = ({ text }) => RenderText(text);
@@ -12,14 +15,16 @@ const RenderUnderline = ({ text }) => <u>{text}</u>;
 
 const RenderColor = ({ text, color }) => <span style={{ color }}>{text}</span>;
 
-const RenderMention = ({ color, children, variableType }) => {
-  // since mention is a node with one child that is a text node. 
-  // directly render it here and stop going further.
-  const value = children[0].text;
+const RenderMention = ({ id }) => {
+  const mentions = useContext(CtxMention);
+  const mentionSetter = useContext(CtxMentionSetter);
+
+  const mention = mentions.get(id);
   const styles = {
-    "backgroundColor": color ? color : 'none',
+    "backgroundColor": mention.color ? mention.color : 'none',
   };
-  return <span style={styles}>{value}</span>;
+
+  return <input type="text" value={mention.value} style={styles} onChange={(e) => mentionHanlder(e, mention, mentions, mentionSetter)}></input>;
 };
 
 const RenderLi = ({ children }) => <li>{renderArray(children)}</li>;
@@ -135,18 +140,25 @@ const RenderElement = (ctx) => {
 };
 
 
-const clauses = new Map();  // {level : {clauseTitle : level_index, ..., }, ...,  }
+const clauses = new Map();  // {level : {clauseTitle : level_index, ..., }, ...,  }. this should be moved to file preprosessing.
 
 
-const ServiceAgreementPage = ({ arrayNode }) => {
+const Renderer = ({data, mens}) => {
+  const [mentions, setMentions] = useState(mens);
+
   return (
     <div>
-      <ClauseLevel.Provider value={0}>
-        {renderArray(arrayNode)}
-      </ClauseLevel.Provider>
+      <CtxMentionSetter.Provider value={setMentions}>
+        <CtxMention.Provider value={mentions}>
+          <ClauseLevel.Provider value={0}>
+            {data && data.length > 0 && renderArray(data)}
+          </ClauseLevel.Provider>
+        </CtxMention.Provider>
+      </CtxMentionSetter.Provider>
     </div>
   );
 }
+
 
 function renderArray(arrayNode) {
   return arrayNode.map((element, index) => {
@@ -154,4 +166,4 @@ function renderArray(arrayNode) {
   });
 }
 
-export default ServiceAgreementPage;
+export default Renderer;

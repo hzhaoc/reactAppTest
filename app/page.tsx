@@ -3,14 +3,13 @@
 import React, {StrictMode} from "react";
 import "./globals.css";
 
-import ServiceAgreementPage from "./App";
-import data from "./testInput.json"
+import ServiceAgreementPage from "./app";
 
 
 export default function Home() {
   return (
   <StrictMode>
-    <ServiceAgreementPage arrayNode={data}/>
+    <ServiceAgreementPage />
   </StrictMode>
   )
 }
