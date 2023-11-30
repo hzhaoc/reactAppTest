@@ -2,14 +2,16 @@ next.js based home project
 
 ## note
 - use react context to figure out clause level. And together with a global map, figure out clause level-index/number. 
-- `page` is entry point. 
-- `app` contains rendering logic with necessary minimum context and global variables. 
+- `page.js` is entry point. 
+- `app.js` contains rendering logic with necessary minimum context and global variables. 
   - render json array iteratively and json node recursively
   - some special logic are applied to special node types. mainly `mention` and `clause`
-- `utils` are extendable helpers based on data formats of input. 
+- `utils.js` are extendable helpers based on data formats of input. 
 - `context.js` for context
-- if we want to make this `app` more interactable with user, `state` `reducer` should be used for improvement.
-
+- further improvement: 
+  - input validation and pre-prosess. see below additional note about input
+  - to make this contract page more interactable with user, use `state` `reducer`.
+  - for production code, use mature framework such as `next.js` that uses typescript for type checking
 
 demo:
 ![demo](./demo.png)
