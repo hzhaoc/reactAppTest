@@ -14,7 +14,7 @@ next.js based home project
   - for production code, use mature framework such as `next.js` that uses typescript for type checking
 
 demo:
-![demo](./demo.png)
+![demo](./demo.gif)
 
 
 ## additional note about input
