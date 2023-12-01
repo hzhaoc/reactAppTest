@@ -1,4 +1,4 @@
-'server-only';
+'use client';
 
 import { useState, useEffect } from 'react';
 import React from 'react';
@@ -13,7 +13,7 @@ const ServiceAgreementPage = () => {
   const getData=()=>{
     fetch(inputFile.url
     ,{
-      headers : inputFile.header,
+      ...inputFile,
     }
     )
       .then(function(response){

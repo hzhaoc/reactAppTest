@@ -1,4 +1,4 @@
-'client-only';
+'use-client';
 
 import { CtxMention, CtxMentionSetter, CtxClauses} from './context.js';
 import { useContext, useState } from 'react';

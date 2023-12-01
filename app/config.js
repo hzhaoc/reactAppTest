@@ -5,4 +5,8 @@ export const inputFile = {
         'Accept': 'application/json',
         'cache': 'force-cache',
     },
+    next: 
+    { 
+        revalidate: 3600 // revalidate input per hour
+    },
 };
