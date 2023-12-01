@@ -9,7 +9,7 @@ function preProcessInput(jsonArray, mentions, clauses) {
 function searchMentionsClauses(jsonArray, mentions, clauses, clauseLevel, clauseIndex) {
     if (!jsonArray)
         return;
-    console.log("json", jsonArray);
+    //console.log("json", jsonArray);
     jsonArray.map((jsonNode) => searchMentionClause(jsonNode, mentions, clauses, clauseLevel, clauseIndex));
 }
 
