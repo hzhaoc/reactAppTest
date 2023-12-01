@@ -10,43 +10,12 @@ next.js based home project
 - `context.js` for `context` 
 - `utils.js` helpers for processing input
 - further improvement: 
-  - input validation and pre-prosess. see below additional note about input
-  - to make this contract page more interactable with user, use `state` `reducer`.
-  - for production code, use mature framework such as `next.js` that uses typescript for type checking
+  - input revalidation
+  - typescript for type checking
 
 demo:
 ![demo](./demo.gif)
 
-
-## additional note about input
-- input `input.json` has a `p` element above `ul` which warns 
-```
-app-index.js:32 Warning: validateDOMNesting(...): <ul> cannot appear as a descendant of <p>.
-```
-this can be further fixed by validtating input json and, in this case, either ignore that tree under `<p>` or change `<ul>` to `<span>` with the help of [Material UI](https://mui.com/material-ui/api/typography/)
-```
-<Typography component={'span'} variant={'body2'}>
-```
-- there's another minor point in input
-```
-{
-"type": "p",
-"text": " means a day (other than a Saturday, Sunday or public holiday) on which registered banks are open for business in "
-},
-{
-"color": "rgb(250, 208, 0)",
-"type": "mention",
-"title": "Governing Law Jurisdiction",
-"children": [
-    {
-    "text": "Auckland"
-    }
-],
-"id": "Governing Law Jurisdiction",
-"value": "Auckland"
-},
-```
-in the above array, the first node is a paragraph `p`, forcing following text `Auckland` to be in a new line but the expected output says differently. i believe this is a minor mistake.
 
 ## run
 ### from cmd
