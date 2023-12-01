@@ -1,10 +1,9 @@
 'use client';
 
-import { ClauseLevel } from './context.js';
 import { useState, useEffect } from 'react';
 import React from 'react';
 import Renderer from "./render";
-import {searchMentions} from './utils.js';
+import {preProcessInput} from './utils.js';
 
 
 const ServiceAgreementPage = () => {
@@ -26,18 +25,20 @@ const ServiceAgreementPage = () => {
         setData(myJson)
       });
   }
+
   useEffect( ()=>{
-    getData()
+    getData();
   }, [])
 
-  const mentions = searchMentions(data);
-  //console.log(mentions);
+  const mentions = {}
+  const clauses = {}
+  preProcessInput(data, mentions, clauses);
+  //console.log("clauses", clauses);
+  //console.log("mentions", mentions);
 
-  return (
+  return (  
     <div>
-      <ClauseLevel.Provider value={0}>
-        {data && data.length > 0 && <Renderer data={data} mens={mentions}/>}
-      </ClauseLevel.Provider>
+        {data && data.length > 0 && <Renderer data={data} mens={mentions} clses={clauses}/>}
     </div>
   );
 }

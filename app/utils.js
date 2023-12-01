@@ -1,14 +1,60 @@
-function findTitle(title, children) {
-    // find title of a clause
-    // either title, or in children[0].title
-    if (title)
-        return title;
-    if (children.length > 0)
-        return children[0].title;
-    return null;
+function preProcessInput(jsonArray, mentions, clauses) {
+    if (!jsonArray)
+        return;  // necessary for re-render as we read input async with effect
+    let clauseIndex = {};
+    let clauseLevel = 0;
+    searchMentionsClauses(jsonArray, mentions, clauses, clauseLevel, clauseIndex);
 }
 
-function getClauseIndex(level, levelIndex) {
+function searchMentionsClauses(jsonArray, mentions, clauses, clauseLevel, clauseIndex) {
+    if (!jsonArray)
+        return;
+    jsonArray.map((jsonNode) => searchMentionClause(jsonNode, mentions, clauses, clauseLevel, clauseIndex));
+}
+
+function searchMentionClause(jsonNode, mentions, clauses, clauseLevel, clauseIndex) {
+    addMention(jsonNode, mentions);
+    clauseLevel = addClause(jsonNode, clauses, clauseLevel, clauseIndex);
+    searchMentionsClauses(jsonNode.children, mentions, clauses, clauseLevel, clauseIndex);
+}
+
+function addMention(jsonNode, mentions) {
+    if (jsonNode.type && jsonNode.type === 'mention') {
+        let mention = {
+            id: jsonNode.id,
+            color: jsonNode.color,
+            value: jsonNode.value,
+        };
+        mentions[mention.id] = mention;
+    }
+}
+
+function addClause(jsonNode, clauses, clauseLevel, clauseIndex) {
+    if (jsonNode.type && jsonNode.type === 'clause') {
+        let node = null;
+        if (jsonNode.children && jsonNode.children.length > 0 && jsonNode.children[0].children && jsonNode.children[0].children.length > 0) {
+            node = jsonNode.children[0].children[0];
+        }
+        if (node && node.text) {
+            clauseLevel++;
+            if (!clauseIndex[clauseLevel]) {
+                clauseIndex[clauseLevel] = 0
+            }
+            clauseIndex[clauseLevel]++;
+            //console.log(clauseLevel, clauseIndex[clauseLevel]);
+            clauses[node.text] = {
+                bold: node.bold ? 'true' : 'false',
+                underline: node.underline ? 'true' : 'false',
+                level: clauseLevel,
+                index: clauseIndex[clauseLevel],
+                contractIndex: clauseContractIndex(clauseLevel, clauseIndex[clauseLevel]),
+            };
+        }
+    }
+    return clauseLevel;
+}
+
+function clauseContractIndex(level, levelIndex) {
     let A = 'abcdefghijklmnopqrstuvwxyzs'
     let tabs = ' '.repeat((level-1)*4);
     let char;
@@ -21,58 +67,5 @@ function getClauseIndex(level, levelIndex) {
     return finalIndex;
 }
 
-function shouldSetClauseTitle(text, title) {
-    var target = text.split('.').join("").split(' ')[0];
-    return title.split(' ')[0] === target;
-}
 
-function getClauseContractTableIndex(text, clauseTitle, level, clauses) {
-    var clauseIdx = null;
-    if (clauseTitle && shouldSetClauseTitle(text, clauseTitle)) {
-        // recognize the correct node to render clause title
-        // get correct level from context
-        // get correct index using a global cache `clauses`
-        let i;
-        const lvl = level;
-        if (!clauses.has(lvl)) {
-          clauses.set(lvl, new Map());
-          clauses.get(lvl).set(clauseTitle, 1);
-          i = 1;
-        } else if (!clauses.get(lvl).has(clauseTitle) ){
-          i = clauses.get(lvl).size + 1;
-          clauses.get(lvl).set(clauseTitle, i);
-        } else {
-          i = clauses.get(lvl).get(clauseTitle);
-        }
-        clauseIdx = getClauseIndex(lvl, i);
-      }
-    return clauseIdx;
-}
-
-function searchMentions(jsonArray) {
-    // recursively preprocess and eventually return map of mentions from input json array 
-    if (!jsonArray)
-        return new Map();
-    let mentions = new Map();
-    jsonArray.map((jsonNode, index) => {
-        mentions = new Map([...mentions, ...searchMentions_(jsonNode)]);
-    });
-    return mentions;
-}
-
-function searchMentions_(jsonNode) {
-    // recursively preprocess and eventually return map of mentions from input json node
-    let mentions = new Map();
-    let mention;
-    if (jsonNode.type && jsonNode.type === 'mention') {
-        mention = {
-            id: jsonNode.id,
-            color: jsonNode.color,
-            value: jsonNode.value,
-        };
-        mentions.set(mention.id, mention);
-    }
-    return new Map([...mentions, ...searchMentions(jsonNode.children)]);
-}
-
-export {findTitle, getClauseIndex, shouldSetClauseTitle, getClauseContractTableIndex, searchMentions};
+export {preProcessInput};
