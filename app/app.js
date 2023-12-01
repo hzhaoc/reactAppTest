@@ -1,21 +1,19 @@
-'use client';
+'server-only';
 
 import { useState, useEffect } from 'react';
 import React from 'react';
 import Renderer from "./render";
 import {preProcessInput} from './utils.js';
+import {inputFile} from './config.js';
 
 
 const ServiceAgreementPage = () => {
   const [data, setData] = useState([]);
 
   const getData=()=>{
-    fetch('./testInput.json'
+    fetch(inputFile.url
     ,{
-      headers : { 
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-       }
+      headers : inputFile.header,
     }
     )
       .then(function(response){

@@ -1,7 +1,7 @@
-'use client';
+'client-only';
 
 import { CtxMention, CtxMentionSetter, CtxClauses} from './context.js';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState } from 'react';
 import React from 'react';
 import {mentionHanlder} from './event.js'
 import { createKey } from 'next/dist/shared/lib/router/router.js';
